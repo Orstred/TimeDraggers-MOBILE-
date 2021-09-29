@@ -15,6 +15,7 @@ public class PlayerCharacter : MonoBehaviour
     LayerMask Boxlayer;
     LayerMask Obstaclelayer;
     bool _isRotating = false;
+
     private void Start()
     {
         World = GameManager.instance;
@@ -34,8 +35,21 @@ public class PlayerCharacter : MonoBehaviour
             //Horizontal movement
             if(Input.GetAxisRaw("Horizontal") != 0)
             {
+                //If there's a box in front
+                if (CheckForBoxHorizontal())
+                {
+                    if (!CheckForBoxHorizontal(2) && !CheckForObstHorizontal(2))
+                    {
+                        MoveTowards(x: Input.GetAxisRaw("Horizontal"));
+                    }
+                    else if (CheckForBoxHorizontal(2) && !CheckForObstHorizontal(3) && !CheckForBoxHorizontal(3))
+                    {
+                        MoveTowards(x: Input.GetAxisRaw("Horizontal"));
+                    }
+                }
 
-                if (!CheckForObstHorizontal())
+                //If theres nothing in the way move
+                else if (!CheckForObstHorizontal())
                 {
                     MoveTowards(x: Input.GetAxisRaw("Horizontal"));
                 }
@@ -45,7 +59,21 @@ public class PlayerCharacter : MonoBehaviour
             //Vertical movement
             else if (Input.GetAxisRaw("Vertical") != 0)
             {
-                if (!CheckForObstVertical())
+                //If there's a box in front
+                if (CheckForBoxVertical())
+                {
+                    if (!CheckForBoxVertical(2) && !CheckForObstVertical(2))
+                    {
+                        MoveTowards(z: Input.GetAxisRaw("Vertical"));
+                    }
+                    else if (CheckForBoxVertical(2) && !CheckForObstVertical(3) && !CheckForBoxVertical(3))
+                    {
+                        MoveTowards(z: Input.GetAxisRaw("Vertical"));
+                    }
+                }
+
+                //If theres nothing in the way move
+                else if (!CheckForObstVertical())
                 {
                     MoveTowards(z: Input.GetAxisRaw("Vertical"));
                 }

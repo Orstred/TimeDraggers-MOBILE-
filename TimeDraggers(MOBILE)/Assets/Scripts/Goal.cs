@@ -2,19 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SnapToGridCorrection : MonoBehaviour
+public class Goal : MonoBehaviour
 {
-    Transform _transform;
+    public int NextLevel;
     GameManager World;
-
     private void Start()
     {
-        _transform = transform;
         World = GameManager.instance;
     }
 
-    private void Update()
+    private void OnTriggerEnter(Collider other)
     {
-        World.SnapToGrid(_transform);
+        if(other.transform.tag == "Player")
+        World.Victory(nextlevel: NextLevel);
     }
+
+
 }
