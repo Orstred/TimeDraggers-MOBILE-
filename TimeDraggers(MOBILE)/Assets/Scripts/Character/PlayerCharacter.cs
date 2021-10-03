@@ -14,14 +14,13 @@ public class PlayerCharacter : MonoBehaviour
     Transform MovePoint;
     LayerMask Boxlayer;
     LayerMask Obstaclelayer;
-    bool _isRotating = false;
 
     private void Start()
     {
         World = GameManager.instance;
-        MovePoint = World.MoveToPoint;
         Boxlayer = World.BoxLayer;
         Obstaclelayer = World.ObstacleLayer;
+        MovePoint = World.MoveToPoint;
         MovePoint.parent = null;
     }
 
@@ -78,6 +77,12 @@ public class PlayerCharacter : MonoBehaviour
                     MoveTowards(z: Input.GetAxisRaw("Vertical"));
                 }
             }
+        }
+
+
+        if (Input.GetKeyDown(KeyCode.Mouse0))
+        {
+            World.SnapRotation(MovePoint, Quaternion.Euler(0,0,0));
         }
     }
 

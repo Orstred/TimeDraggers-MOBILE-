@@ -2,9 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BoxSnapCorrection : MonoBehaviour
+public class Box : MonoBehaviour
 {
     Transform _transform;
+  
     GameManager World;
     private void Start()
     {
@@ -17,6 +18,7 @@ public class BoxSnapCorrection : MonoBehaviour
         if(collision.transform.tag == "Player")
         {
             World.SnapToGrid(_transform);
+            World.SnapRotation(_transform, Quaternion.Euler(0,0,0));
         }
     }
 

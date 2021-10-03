@@ -1,20 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 public class Goal : MonoBehaviour
 {
-    public int NextLevel;
-    GameManager World;
-    private void Start()
-    {
-        World = GameManager.instance;
-    }
+    public int Level;
 
     private void OnTriggerEnter(Collider other)
     {
         if(other.transform.tag == "Player")
-        World.Victory(nextlevel: NextLevel);
+        {
+            SceneManager.LoadScene(Level);
+        }
+       
     }
 
 

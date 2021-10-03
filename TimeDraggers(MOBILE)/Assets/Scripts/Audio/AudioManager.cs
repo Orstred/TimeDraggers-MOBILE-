@@ -14,7 +14,7 @@ public class AudioManager : MonoBehaviour
     #endregion
 
     public Sound[] sounds;
-    public void Play(string name)
+    public void Play(string name,float volume = 50)
     {
 
         Sound s = Array.Find(sounds, Sound => Sound.Name == name);
@@ -25,6 +25,7 @@ public class AudioManager : MonoBehaviour
             Debug.Log("\"" + name + "\"" + " could not be found");
             return;
         }
+        s.source.volume = volume;
         s.source.pitch = s.pitch;
         s.source.Play();
     }

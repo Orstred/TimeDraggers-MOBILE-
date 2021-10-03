@@ -6,12 +6,29 @@ using UnityEngine.UI;
 public class Menu : MonoBehaviour
 {
 
-
-
-
-    public void GetLevel(int Level)
+    
+    
+    public void NewGame()
     {
-        SceneManager.LoadScene(Level);
+        PlayerPrefs.DeleteKey("SavedLevel");
+        SceneManager.LoadScene(2);
+    }
+    public void ContinueLevel()
+    {
+
+
+   
+        if (PlayerPrefs.HasKey("SavedLevel"))
+        {
+        
+            SceneManager.LoadScene(PlayerPrefs.GetInt("SavedLevel"));
+      
+        }
+        else
+        {
+            SceneManager.LoadScene(1);
+        }
+      
     }
     public void OptionsMenu(Canvas opt)
     {
