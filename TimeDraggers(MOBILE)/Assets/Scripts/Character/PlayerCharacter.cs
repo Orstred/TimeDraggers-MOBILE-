@@ -14,7 +14,7 @@ public class PlayerCharacter : MonoBehaviour
     Transform MovePoint;
     LayerMask Boxlayer;
     LayerMask Obstaclelayer;
-
+    float TileSize;
     private void Start()
     {
         World = GameManager.instance;
@@ -22,6 +22,7 @@ public class PlayerCharacter : MonoBehaviour
         Obstaclelayer = World.ObstacleLayer;
         MovePoint = World.MoveToPoint;
         MovePoint.parent = null;
+        TileSize = World.TileSize;
     }
 
     private void Update()
@@ -88,9 +89,9 @@ public class PlayerCharacter : MonoBehaviour
 
     void MoveTowards(float x = 0, float y = 0, float z = 0)
     {
-        MovePoint.position += new Vector3(x, y, z);
+        MovePoint.position += new Vector3(x, y, z) * TileSize;
     }
-
+ 
     public bool CheckForObstVertical(float Squaresahead = 1)
     {
         bool obst = false;
@@ -124,10 +125,14 @@ public class PlayerCharacter : MonoBehaviour
     public bool CheckForBoxHorizontal(float Squaresahead = 1)
     {
         bool obst = false;
-        if (Physics.CheckSphere(MovePoint.position + new Vector3(Input.GetAxisRaw("Horizontal") * Squaresahead, 0, 0), .2f, Boxlayer))
-        {
-            obst = true;
-        }
-        return obst;
+       
+           
+            if (Physics.CheckSphere(MovePoint.position + new Vector3(Input.GetAxisRaw("Horizontal") * Squaresahead, 0, 0), .2f, Boxlayer))
+            {
+                obst = true;
+            }
+            return obst;
+       
     }
+
 }

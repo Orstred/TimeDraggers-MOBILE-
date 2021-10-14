@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour
     public Transform MoveToPoint;
     public LayerMask ObstacleLayer;
     public LayerMask BoxLayer;
-
+    public float TileSize;
     //Audio Settings
     [HideInInspector]
     public float MusicVolume;
