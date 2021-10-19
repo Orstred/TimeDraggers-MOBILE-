@@ -13,7 +13,7 @@ public class SnapToGridCorrection : MonoBehaviour
         World = GameManager.instance;
         _transform.rotation = World.PlayerCharacter.rotation;
         _transform.position = World.PlayerCharacter.position;
-        DontDestroyOnLoad(gameObject);
+   
     }
 
     private void Update()

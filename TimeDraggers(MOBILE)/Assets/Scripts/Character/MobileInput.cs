@@ -28,23 +28,55 @@ public class MobileInput : MonoBehaviour
     {
         RaycastHit hit;
 
+        if(Input.touchCount > 0)
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
 
+
+            if (Physics.Raycast(ray, out hit, 1000f, ~IgnoreLayer))
+            {
+                if (hit.transform.tag != "Player" && Vector3.Distance(hit.transform.position, MovePoint.position) <= 10)
+                {
+                    #region MoveTo
+                    if (GetDirection(hit.transform).x == 1 || GetDirection(hit.transform).x == -1 || GetDirection(hit.transform).z == 1 || GetDirection(hit.transform).z == -1)
+                    {
+
+                        if (!Physics.CheckSphere(hit.point, .2f, Obstacles) && !CheckForObst(0, hit.transform))
+                        {
+                            MoveTo(hit.transform);
+                        }
+
+                    }
+
+
+                    #endregion
+
+                }
+            }
+
+        }
 
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit, 1000f, ~IgnoreLayer))
             {
-                if(hit.transform.tag != "Player" && Vector3.Distance(hit.transform.position, MovePoint.position) <= 2)
+                if(hit.transform.tag != "Player" && Vector3.Distance(hit.transform.position, MovePoint.position) <= 10)
                 {
                     #region MoveTo
-
-                    if (!Physics.CheckSphere(hit.point, .2f, Obstacles))
+                    if(GetDirection(hit.transform).x == 1 || GetDirection(hit.transform).x == -1 || GetDirection(hit.transform).z == 1 || GetDirection(hit.transform).z == -1)
                     {
-                        MoveTo(hit.transform);
+
+                        if (!Physics.CheckSphere(hit.point, .2f, Obstacles) && !CheckForObst(0,hit.transform))
+                        {
+                            MoveTo(hit.transform);
+                        }
+
                     }
 
+
                     #endregion
+                   
                 }
             }
         }
@@ -54,30 +86,75 @@ public class MobileInput : MonoBehaviour
 
     void MoveTo(Transform t)
     {
-        MovePoint.position = t.position + Vector3.up;
+      
+        MovePoint.position = CheckForObstAlongTheWay(MovePoint.position, t.position + Vector3.up);
     }
 
 
 
 
-    bool CheckForBoxHorizontal(int SquaresAhead = 1)
+    bool CheckForBox(Transform t,int SquaresAhead = 1)
     {
-        return true;
+        
+    
+    if (Physics.CheckSphere((t.position + Vector3.up) + (-GetDirection(t) * SquaresAhead), .2f, World.BoxLayer))
+    {
+            return true;
     }
-    bool CheckForBoxVertical(int SquaresAhead = 1)
+  
+
+        return false;
+    }
+
+    bool CheckForObst(int SquaresAhead, Transform t)
     {
-        return true;
+
+
+
+        if(Physics.CheckSphere((_transform.position + GetDirection(t)) * SquaresAhead , .2f, Obstacles))
+        {
+            return true;
+        }
+
+        return false;
     }
 
 
 
-
-
-
-
-    Vector3 GetDirection(Vector3 RelativePoint)
+    Vector3 CheckForObstAlongTheWay(Vector3 pos1, Vector3 pos2)
     {
-        Vector3 dir = (_transform.position - RelativePoint).normalized;
-        return dir;
+
+        Vector3 po1 = pos1;
+        Vector3 po2 = pos2;
+        //get direction
+        Vector3 dir = (pos1 - pos2).normalized;
+
+        while(po1 != po2)
+        {
+
+
+            if (Physics.CheckSphere(po1, .2f, Obstacles))
+            {
+                return po1 + dir.normalized;
+            }
+
+
+
+            po1 += -dir.normalized;
+
+
+            
+        }
+
+
+
+        return pos2;
+    }
+
+
+    Vector3 GetDirection(Transform RelativePoint)
+    {
+        Vector3 dir = (_transform.position - (RelativePoint.position + Vector3.up)).normalized;
+        return dir.normalized;
     }
 }
