@@ -9,7 +9,8 @@ public class MobileInput : MonoBehaviour
     GameManager World;
     Transform MovePoint;
     PlayerCharacter player;
-    LayerMask Obstacles;
+    LayerMask ObstaclesLayer;
+    LayerMask BoxLayer;
     Transform _transform;
     float TileSize;
     private void Start()
@@ -17,9 +18,10 @@ public class MobileInput : MonoBehaviour
         World = GameManager.instance;
         MovePoint = World.MoveToPoint;
         player = World.PlayerCharacter.GetComponent<PlayerCharacter>();
-        Obstacles = World.ObstacleLayer;
+        ObstaclesLayer = World.ObstacleLayer;
         _transform = player.transform;
         TileSize = World.TileSize;
+        BoxLayer = World.BoxLayer;
     }
     #endregion
     public LayerMask IgnoreLayer;
@@ -41,7 +43,7 @@ public class MobileInput : MonoBehaviour
                     if (GetDirection(hit.transform).x == 1 || GetDirection(hit.transform).x == -1 || GetDirection(hit.transform).z == 1 || GetDirection(hit.transform).z == -1)
                     {
 
-                        if (!Physics.CheckSphere(hit.point, .2f, Obstacles) && !CheckForObst(0, hit.transform))
+                        if (!Physics.CheckSphere(hit.point, .2f, ObstaclesLayer) && !CheckForObst(0, hit.transform))
                         {
                             MoveTo(hit.transform);
                         }
@@ -67,7 +69,7 @@ public class MobileInput : MonoBehaviour
                     if(GetDirection(hit.transform).x == 1 || GetDirection(hit.transform).x == -1 || GetDirection(hit.transform).z == 1 || GetDirection(hit.transform).z == -1)
                     {
 
-                        if (!Physics.CheckSphere(hit.point, .2f, Obstacles) && !CheckForObst(0,hit.transform))
+                        if (!Physics.CheckSphere(hit.point, .2f, ObstaclesLayer) && !CheckForObst(0,hit.transform))
                         {
                             MoveTo(hit.transform);
                         }
@@ -86,32 +88,20 @@ public class MobileInput : MonoBehaviour
 
     void MoveTo(Transform t)
     {
-      
+   
         MovePoint.position = CheckForObstAlongTheWay(MovePoint.position, t.position + Vector3.up);
     }
 
 
 
 
-    bool CheckForBox(Transform t,int SquaresAhead = 1)
-    {
-        
-    
-    if (Physics.CheckSphere((t.position + Vector3.up) + (-GetDirection(t) * SquaresAhead), .2f, World.BoxLayer))
-    {
-            return true;
-    }
-  
-
-        return false;
-    }
 
     bool CheckForObst(int SquaresAhead, Transform t)
     {
 
 
 
-        if(Physics.CheckSphere((_transform.position + GetDirection(t)) * SquaresAhead , .2f, Obstacles))
+        if(Physics.CheckSphere((_transform.position + GetDirection(t)) * SquaresAhead , .2f, ObstaclesLayer))
         {
             return true;
         }
@@ -119,7 +109,18 @@ public class MobileInput : MonoBehaviour
         return false;
     }
 
+    bool CheckForBox(Vector3 pos1, Vector3 pos2)
+    {
 
+        Vector3 dir = (pos1 - pos2).normalized;
+
+        if (Physics.CheckSphere(pos2, .2f, BoxLayer))
+        {
+            return true;
+        }
+
+        return false;
+    }
 
     Vector3 CheckForObstAlongTheWay(Vector3 pos1, Vector3 pos2)
     {
@@ -133,7 +134,7 @@ public class MobileInput : MonoBehaviour
         {
 
 
-            if (Physics.CheckSphere(po1, .2f, Obstacles))
+            if (Physics.CheckSphere(po1, .2f, ObstaclesLayer))
             {
                 return po1 + dir.normalized;
             }
