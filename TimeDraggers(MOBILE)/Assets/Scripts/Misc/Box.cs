@@ -15,7 +15,7 @@ public class Box : MonoBehaviour
 
     private void OnCollisionExit(Collision collision)
     {
-        if(collision.transform.tag == "Player")
+        if(collision.transform.tag == "Player" || collision.transform.tag == "BoxHasWeight")
         {
             World.SnapToGrid(_transform);
             World.SnapRotation(_transform, Quaternion.Euler(0,0,0));
