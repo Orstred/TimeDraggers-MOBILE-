@@ -37,18 +37,18 @@ public class MobileInput : MonoBehaviour
 
             if (Physics.Raycast(ray, out hit, 1000f, ~IgnoreLayer))
             {
-                if (hit.transform.tag != "Player" && Vector3.Distance(hit.transform.position, MovePoint.position) <= 10)
+                if (hit.transform.tag != "Player" && Vector3.Distance(hit.transform.position, MovePoint.position) <= 100)
                 {
                     #region MoveTo
-                    if (GetDirection(hit.transform).x == 1 || GetDirection(hit.transform).x == -1 || GetDirection(hit.transform).z == 1 || GetDirection(hit.transform).z == -1)
-                    {
+                //    if (GetDirection(hit.transform).x == 1 || GetDirection(hit.transform).x == -1 || GetDirection(hit.transform).z == 1 || GetDirection(hit.transform).z == -1)
+                  //  {
 
                         if (!Physics.CheckSphere(hit.point, .2f, ObstaclesLayer) && !CheckForObst(0, hit.transform))
                         {
                             MoveTo(hit.transform);
                         }
 
-                    }
+                   // }
 
 
                     #endregion
@@ -63,7 +63,7 @@ public class MobileInput : MonoBehaviour
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit, 1000f, ~IgnoreLayer))
             {
-                if(hit.transform.tag != "Player" && Vector3.Distance(hit.transform.position, MovePoint.position) <= 10)
+                if(hit.transform.tag != "Player")
                 {
                     #region MoveTo
                     if(GetDirection(hit.transform).x == 1 || GetDirection(hit.transform).x == -1 || GetDirection(hit.transform).z == 1 || GetDirection(hit.transform).z == -1)
@@ -112,7 +112,7 @@ public class MobileInput : MonoBehaviour
 
         Vector3 po1 = pos1;
         Vector3 po2 = pos2;
-        Vector3 dir = -(pos1 - pos2).normalized;
+        Vector3 dir = (pos2 - pos1).normalized;
 
         while(po1 != po2)
         {
@@ -147,13 +147,11 @@ public class MobileInput : MonoBehaviour
 
         //Check the square in front of the end position to see if there is a box or obstacle in front
         //If there is a box check the quare in front of it and repeat until there is nothing or there is an obstacle
-        if (Physics.CheckSphere(pos2 + dir.normalized, .2f, BoxLayer) && !Physics.CheckSphere(pos2 + dir.normalized, .2f, ObstaclesLayer))
-        {
-            Debug.LogWarning("Special box condition [CUSTOM_ERROR]");
-        }
+        if(squarestostop > 0)
+        squarestostop = CheckForEmptyAhead(pos1, pos2, squarestostop);
 
          //Return the final position based on the squarestostop
-         if (squarestostop != 0)  
+         if (squarestostop > 0)  
         {
             return po1 - (dir.normalized * squarestostop);
         }
@@ -161,6 +159,36 @@ public class MobileInput : MonoBehaviour
 
 
         return po1;
+    }
+
+    int CheckForEmptyAhead(Vector3 pos1, Vector3 pos2, int squares)
+    {
+
+         Vector3 po1 = pos1;
+         Vector3 po2 = pos2;
+         Vector3 dir = -(pos1 - pos2).normalized;
+        if (Physics.CheckSphere(pos2 + dir.normalized, .2f, ObstaclesLayer))
+        {
+            return squares;
+        }
+        else if (!Physics.CheckSphere(pos2 + dir.normalized, .2f, BoxLayer))
+        {
+            for(int x = squares; x > 0; x--)
+            {
+                if (!Physics.CheckSphere(pos2 + dir.normalized, .2f, BoxLayer))
+                {
+                    squares--;
+                }
+                else
+                {
+                    return squares;
+                }
+            }
+
+            return squares;
+        }
+        else
+        return squares;
     }
 
     Vector3 GetDirection(Transform RelativePoint)
