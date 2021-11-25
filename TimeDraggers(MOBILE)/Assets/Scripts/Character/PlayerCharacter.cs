@@ -21,6 +21,7 @@ public class PlayerCharacter : MonoBehaviour
         Boxlayer = World.BoxLayer;
         Obstaclelayer = World.ObstacleLayer;
         MovePoint = World.MoveToPoint;
+        if (MovePoint.parent != null)
         MovePoint.parent = null;
         TileSize = World.TileSize;
     }
